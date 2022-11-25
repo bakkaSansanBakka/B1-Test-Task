@@ -11,6 +11,8 @@ namespace Task1
     {
         private static Random random = new Random();
 
+        // creates lines of randomly generated
+        // parts and writes them to files
         public static void CreateFiles()
         {
             var lines = new string[100000];
@@ -21,6 +23,7 @@ namespace Task1
             string randomPositiveEvenInteger;
             string randomPositiveDouble;
 
+            // creates directory if it doesn't exist
             Directory.CreateDirectory("GeneratedFiles");
 
             for (var i = 0; i < files.Length; i++)
@@ -35,10 +38,11 @@ namespace Task1
                     lines[j] = $"{randomDate}||{randomLatin}||{randomRus}||{randomPositiveEvenInteger}||{randomPositiveDouble}||";
                 }
                 File.WriteAllLines($@"GeneratedFiles/{i + 1}.txt", lines);
-                Console.WriteLine($"File {i + 1} created");
+                Console.WriteLine($"File {i + 1} created"); // kind of logging
             }
         }
 
+        // generates random date for the last 5 years
         private static string getRandomDate()
         {
             var startDate = DateTime.Now.AddYears(-5);
@@ -47,6 +51,7 @@ namespace Task1
             return randomDate;
         }
 
+        // generates string of random latin letters
         private static string getRandomLatin()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -54,6 +59,7 @@ namespace Task1
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
+        // generates string of random cyrillic letters
         private static string getRandomRus()
         {
             const string chars = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя";
@@ -61,21 +67,25 @@ namespace Task1
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
+        // generates string of random positive even int number
         private static string getRandomPositiveEvenInteger()
         {
             return (2 * random.Next(1 / 2, 100000001 / 2)).ToString();
         }
 
+        // generates string of random positive double number
         private static string getRandomPositiveDouble()
         {
             return (random.NextDouble() * (20 - 1) + 1).ToString("0.00000000");
         }
 
+        // merges existing files in one file and deletes rows that contain certain combination of characters
         public static void MergeFilesAndDeleteStringWithCharacterCombination()
         {
             Console.WriteLine("Enter character combination:");
             var combination = Console.ReadLine();
 
+            // create directory if not exist
             var dir = Directory.CreateDirectory("MergedFiles");
             using StreamWriter mergedFile = new(@$"{dir}\mergedFiles.txt");
             var files = Directory.GetFiles("GeneratedFiles");

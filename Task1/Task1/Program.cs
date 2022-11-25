@@ -4,6 +4,7 @@
     {
         static void Main(string[] args)
         {
+            // change number format of gloating point numbers
             Configuration.ConfigureCulture();
             while(true)
             {
