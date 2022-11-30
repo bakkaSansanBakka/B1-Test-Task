@@ -1,0 +1,207 @@
+﻿@model DataViewModel
+
+@functions {
+    public decimal GetClassOpeningBalanceAssets(int classId)
+    {
+        return Model.Data.Where(item => item.ClassId == classId).Sum(item => item.OpeningBalanceAssets);
+    }
+
+    public decimal GetClassOpeningBalanceLiabilities(int classId)
+    {
+        return Model.Data.Where(item => item.ClassId == classId).Sum(item => item.OpeningBalanceLiabilities);
+    }
+
+    public decimal GetClassMoneyTurnoverDebit(int classId)
+    {
+        return Model.Data.Where(item => item.ClassId == classId).Sum(item => item.MoneyTurnoverDebit);
+    }
+
+    public decimal GetClassMoneyTurnoverCredit(int classId)
+    {
+        return Model.Data.Where(item => item.ClassId == classId).Sum(item => item.MoneyTurnoverCredit);
+    }
+
+    public decimal GetClassClosingBalanceAssets(int classId)
+    {
+        return Model.Data.Where(item => item.ClassId == classId).Sum(item => item.ClosingBalanceAssets);
+    }
+
+    public decimal GetClassClosingBalanceLiabilities(int classId)
+    {
+        return Model.Data.Where(item => item.ClassId == classId).Sum(item => item.ClosingBalanceLiabilities);
+    }
+
+    public decimal GetGroupOpeningBalanceAssets(int accountGroup)
+    {
+        return Model.Data.Where(item => item.AccountGroup == accountGroup).Sum(item => item.OpeningBalanceAssets);
+    }
+
+    public decimal GetGroupOpeningBalanceLiabilities(int accountGroup)
+    {
+        return Model.Data.Where(item => item.AccountGroup == accountGroup).Sum(item => item.OpeningBalanceLiabilities);
+    }
+
+    public decimal GetGroupMoneyTurnoverDebit(int accountGroup)
+    {
+        return Model.Data.Where(item => item.AccountGroup == accountGroup).Sum(item => item.MoneyTurnoverDebit);
+    }
+
+    public decimal GetGroupMoneyTurnoverCredit(int accountGroup)
+    {
+        return Model.Data.Where(item => item.AccountGroup == accountGroup).Sum(item => item.MoneyTurnoverCredit);
+    }
+
+    public decimal GetGroupClosingBalanceAssets(int accountGroup)
+    {
+        return Model.Data.Where(item => item.AccountGroup == accountGroup).Sum(item => item.ClosingBalanceAssets);
+    }
+
+    public decimal GetGroupClosingBalanceLiabilities(int accountGroup)
+    {
+        return Model.Data.Where(item => item.AccountGroup == accountGroup).Sum(item => item.ClosingBalanceLiabilities);
+    }
+}
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .td-center {
+        text-align: center;
+    }
+
+    .data-class-name {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .tr-info {
+        font-weight: bold;
+        text-align: right;
+    }
+
+    .align-right {
+        text-align: right;
+    }
+
+    table td, table th {
+        border: 1px solid black;
+    }
+
+    table tr:first-child th {
+        border-top: 0;
+    }
+
+    table tr:last-child td {
+        border-bottom: 0;
+    }
+
+    table tr td:first-child,
+    table tr th:first-child {
+        border-left: 0;
+    }
+
+    table tr td:last-child,
+    table tr th:last-child {
+        border-right: 0;
+    }
+</style>
+
+<div>
+    <p>@Model.BankName</p>
+    <h3 style="text-align:center">@Model.DocumentTitle</h3>
+    <p style="text-align:center">@Model.TimePeriod</p>
+    <p style="text-align:center">@Model.Option</p>
+
+    <table>
+        <tr>
+            <td colspan="6" style="border:none">@Model.DateOfCreation</td>
+            <td style="border:none" class="align-right">@Model.Currency</td>
+        </tr>
+        <tr>
+            <th rowspan="2" class="td-center">Б/сч</th>
+            <th colspan="2" class="td-center">ВХОДЯЩЕЕ САЛЬДО</th>
+            <th colspan="2" class="td-center">ОБОРОТЫ</th>
+            <th colspan="2" class="td-center">ИСХОДЯЩЕЕ САЛЬДО</th>
+        </tr>
+        <tr>
+            <th class="td-center">Актив</th>
+            <th class="td-center">Пассив</th>
+            <th class="td-center">Дебет</th>
+            <th class="td-center">Кредит</th>
+            <th class="td-center">Актив</th>
+            <th class="td-center">Пассив</th>
+        </tr>
+
+        @for (var i = 1; i < 10; i++)
+        {
+            int classId = i;
+            string className = Model.Data.First().ClassName;
+
+            <tr>
+                <td colspan="7" class="data-class-name">КЛАСС @i @className</td>
+            </tr>
+
+            foreach (var row in Model.Data.Select((val, i) => new { i, val } ))
+            {
+                var rowVal = row.val;
+                var index = row.i;
+
+                if (classId != row.val.ClassId)
+                {
+                    className = row.val.ClassName;
+                }
+                else
+                {
+                    <tr class="align-right">
+                        <td>@rowVal.AccountId</td>
+                        <td>@rowVal.OpeningBalanceAssets</td>
+                        <td>@rowVal.OpeningBalanceLiabilities</td>
+                        <td>@rowVal.MoneyTurnoverDebit</td>
+                        <td>@rowVal.MoneyTurnoverCredit</td>
+                        <td>@rowVal.ClosingBalanceAssets</td>
+                        <td>@rowVal.ClosingBalanceLiabilities</td>
+                    </tr>
+
+                    if (Model.Data.Count - 1 == index || (index + 1 < Model.Data.Count && rowVal.AccountGroup != Model.Data[index + 1]?.AccountGroup))
+                    {
+                        var current = rowVal.AccountGroup;
+
+                        <tr class="tr-info">
+                            <td>@current</td>
+                            <td>@GetGroupOpeningBalanceAssets(current)</td>
+                            <td>@GetGroupOpeningBalanceLiabilities(current)</td>
+                            <td>@GetGroupMoneyTurnoverDebit(current)</td>
+                            <td>@GetGroupMoneyTurnoverCredit(current)</td>
+                            <td>@GetGroupClosingBalanceAssets(current)</td>
+                            <td>@GetGroupClosingBalanceLiabilities(current)</td>
+                        </tr>
+                    }
+                }
+            }
+            <tr class="tr-info">
+                <td>ПО КЛАССУ</td>
+                <td>@GetClassOpeningBalanceAssets(classId)</td>
+                <td>@GetClassOpeningBalanceLiabilities(classId)</td>
+                <td>@GetClassMoneyTurnoverDebit(classId)</td>
+                <td>@GetClassMoneyTurnoverCredit(classId)</td>
+                <td>@GetClassClosingBalanceAssets(classId)</td>
+                <td>@GetClassClosingBalanceLiabilities(classId)</td>
+            </tr>
+        }
+
+        <tr class="tr-info">
+            <td>БАЛАНС</td>
+            <td>@Model.OpeningBalanceAssetsGeneralSum</td>
+            <td>@Model.OpeningBalanceLiabilitiesGeneralSum</td>
+            <td>@Model.MoneyTurnoverDebitGeneralSum</td>
+            <td>@Model.MoneyTurnoverCreditGeneralSum</td>
+            <td>@Model.ClosingBalanceAssetsGeneralSum</td>
+            <td>@Model.ClosingBalanceLiabilitiesGeneralSum</td>
+        </tr>
+
+    </table>
+    
+</div>

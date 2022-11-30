@@ -1,0 +1,19 @@
+﻿@model List<FileViewModel>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div>
+    <input type="button" class="btn btn-primary btn-lg" value="Load files"
+           onclick="@("window.location.href='" + @Url.Action("LoadFiles", "Home") + "'");" />
+</div>
+<h1>
+    Uploaded files
+</h1>
+
+@if(Model.Count > 0) {
+    foreach(var file in Model){
+        <p><a asp-controller="Home" asp-action="ViewFile" asp-route-fileName="@file.Name">@file.Name</a></p>
+    }
+}
