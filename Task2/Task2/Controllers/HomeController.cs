@@ -26,9 +26,11 @@ namespace Task2.Controllers
 
         public IActionResult Index()
         {
-            var currentDirectory = Directory.GetCurrentDirectory();
-            var uploadedFilesDirectory = Path.Combine(currentDirectory, @"wwwroot\UploadedFiles");
-            string[] files = Directory.GetFiles(uploadedFilesDirectory);
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+            string[] files = Directory.GetFiles(filePath);
             List<FileViewModel> filesList = new List<FileViewModel>();
             foreach (var file in files)
             {
