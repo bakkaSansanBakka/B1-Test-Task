@@ -24,7 +24,7 @@ declare @date date,
 		@numberDec float,
 		@linesAdded int = 0,
 		@linesLeft int
-truncate table Storage
+delete from Storage
 
 declare db_cursor cursor for
 select date, stringEng, stringRu, numberInt, numberDec
@@ -37,15 +37,15 @@ from openrowset
 as imported
 
 open db_cursor
-
+	
+	--set @linesLeft = @@ROWCOUNT
 	fetch next from db_cursor into @date, @stringEng, @stringRu, @numberInt, @numberDec
 	while @@FETCH_STATUS = 0
 	begin
-		print(@stringRu)
 		insert into Storage(date, stringEng, stringRu, numberInt, numberDec)
 			values(@date, @stringEng, @stringRu, @numberInt, @numberDec)
 		set @linesAdded += 1
-		set @linesLeft = @@CURSOR_ROWS
+		set @linesLeft = @@CURSOR_ROWS - @linesAdded
 		print('Lines added: ' + cast(@linesAdded as nvarchar(10)) + ', lines left to add: ' + cast(@linesLeft as nvarchar(10)))
 		fetch next from db_cursor into @date, @stringEng, @stringRu, @numberInt, @numberDec
 	end
